@@ -6,7 +6,6 @@ rm -rf /workdir && mkdir /workdir
 # fetch and prepare src
 cd /workdir && \
     fetch --no-history --nohooks chromium && \
-    patch -p1 -d /workdir/src -i /srcdir/src.diff && \
     touch /workdir/src/build/util/LASTCHANGE
 
 generate_and_build() {
