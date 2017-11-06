@@ -5,35 +5,20 @@ IMAGE := gn-build-env
 
 all: build-and-upload-gn
 
+ifeq ($(V), 1)
+  BASH := bash -x
+else
+  BASH := bash
+endif
+
 build-image:
-	docker build -t $(IMAGE) .
+	$(BASH) $(PWD)/update-image.sh
 
-download-deps: .deps-downloaded
-
-.deps-downloaded:
-	git clone git@github.com:john-yan/ibm-buildtools-for-v8.git deps/buildtools
-	touch .deps-downloaded
-
-update-deps: download-deps
-	cd "$(BUILDTOOLS)" && git remote update && git reset --hard origin/master
-
-build-and-update-gn:
-	docker run --rm -v "$(BUILDTOOLS)/buildtools-$(ARCH):/buildtools" $(IMAGE) bash -x /srcdir/script.sh
-
-upload-gn:
-	$(eval VERSION := $(shell "$(BUILDTOOLS)/buildtools-$(ARCH)/gn" --version))
-	cd "$(BUILDTOOLS)" && \
-	git commit ./buildtools-$(ARCH)/gn -m "GN: Update $(ARCH) gn to $(VERSION)" && \
-	git push
-
-build-and-upload-gn: build-and-update-gn
-	$(eval VERSION := $(shell "$(BUILDTOOLS)/buildtools-$(ARCH)/gn" --version))
-	cd "$(BUILDTOOLS)" && \
-	git commit ./buildtools-$(ARCH)/gn -m "GN: Update $(ARCH) gn to $(VERSION)" && \
-	git push
+build-and-upload-gn: build-image
+	docker run --rm -v "$(HOME):/root/host_home" $(IMAGE) $(BASH) /src/build-and-upload-gn.sh
 
 run:
-	docker run --rm -it -v "$(PWD)/buildtools-$(ARCH):/buildtools" $(IMAGE) bash || true
+	docker run --rm -it -v "$(HOME):/root/host_home" $(IMAGE) bash || true
 
-.PHONY: build-images build-and-update-gn upload-gn build-and-upload-gn run download-deps update-deps
+.PHONY: build-images build-and-upload-gn run
 
