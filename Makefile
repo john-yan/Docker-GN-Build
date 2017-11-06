@@ -12,7 +12,7 @@ else
 endif
 
 build-image:
-	$(BASH) $(PWD)/update-image.sh
+	$(BASH) "$(PWD)/update-image.sh"
 
 build-and-upload-gn: build-image
 	docker run --rm -v "$(HOME):/root/host_home" $(IMAGE) $(BASH) /src/build-and-upload-gn.sh
