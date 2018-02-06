@@ -5,6 +5,9 @@ M=$(uname -m)
 # cleanup
 rm -rf /workdir && mkdir /workdir && cd /workdir
 
+# Report disk info
+df -h
+
 # setup ssh config as host
 cp -r /root/host_home/.ssh /root/.ssh
 
