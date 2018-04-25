@@ -20,5 +20,5 @@ build-and-upload-gn: build-image
 run:
 	docker run --rm -it -v "$(HOME):/root/host_home" $(IMAGE) bash || true
 
-.PHONY: build-images build-and-upload-gn run
+.PHONY: build-image build-and-upload-gn run
 
