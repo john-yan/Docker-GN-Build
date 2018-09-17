@@ -40,9 +40,15 @@ if [[ $? -ne 0 ]] ; then
   exit -1
 fi
 
+OLD_VERSION=$(/buildtools/buildtools-$M/gn --version)
+NEW_VERSION=$(/workdir/gn/out/gn --version)
+if [[ $OLD_VERSION == $NEW_VERSION ]] ; then
+  echo "Already on latest gn version"
+  exit 0
+fi
+
 cp /workdir/gn/out/gn /buildtools/buildtools-$M/gn
-VERSION=$(/buildtools/buildtools-$M/gn --version)
 cd /buildtools
-git commit ./buildtools-$M/gn -m "GN: Update $M gn to $VERSION"
+git commit ./buildtools-$M/gn -m "GN: Update $M gn to $NEW_VERSION"
 git push
 
