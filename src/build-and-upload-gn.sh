@@ -30,8 +30,13 @@ if [[ $? -ne 0 ]] ; then
   exit -1
 fi
 
+cd /workdir/gn
+
+# revert icf change
+git revert 282a428cc9603abb65d985144b92caa225cd6392
+
 # generate and build gn
-cd /workdir/gn && python build/gen.py --no-sysroot && ninja -C out
+python build/gen.py && ninja -C out
 
 # test
 out/gn_unittests
